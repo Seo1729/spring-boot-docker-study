@@ -1,40 +1,44 @@
 package com.example.demo;
 
 import java.util.List;
-import org.springframework.web.bind.annotation.*;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class HelloController {
 
-    // 1. 진짜 DB 리모컨을 가져옵니다.
-    private final UserRepository userRepository;
+    // 🔥 이제 Repository가 아니라 Service(주방장)를 바라봅니다!
+    private final UserService userService;
 
-    // 2. 스프링 부트가 켜질 때 이 리모컨을 자동으로 연결(주입)해 줍니다.
-    public HelloController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public HelloController(UserService userService) {
+        this.userService = userService;
     }
 
     @GetMapping("/hello")
     public String sayHello() {
-        return "멘토님, 저 드디어 도커 DB 연동까지 성공했어요!";
+        return "2일 차 레이어드 아키텍처 분리도 성공!";
     }
 
-    // 3. 전체 유저 조회 API (DB에서 모두 꺼내옵니다)
+    // 전체 조회: 매니저는 주방장에게 요청만 전달합니다.
     @GetMapping("/user")
     public List<User> getUser() {
-        return userRepository.findAll(); // findAll()은 JPA가 공짜로 주는 메서드입니다!
+        return userService.getAllUsers();
     }
 
-    // 4. 나이 필터링 API (우리가 인터페이스에 적어둔 메서드를 호출합니다)
+    // 필터링 조회
     @GetMapping("/filter")
     public List<User> filterUser(@RequestParam(name = "age") int inputAge) {
-        return userRepository.findByAge(inputAge); 
+        return userService.getUsersByAge(inputAge);
     }
 
-    // 5. 유저 등록 API (진짜 DB에 저장합니다)
+    // 유저 등록
     @PostMapping("/user")
     public String createUser(@RequestBody User newUser) {
-        userRepository.save(newUser); // save()도 JPA가 공짜로 줍니다. DB에 쏙!
-        return newUser.getName() + " 유저가 진짜 데이터베이스에 등록되었습니다!";
+        userService.registerUser(newUser);
+        return newUser.getName() + " 유저가 서비스를 거쳐 진짜 DB에 등록되었습니다!";
     }
 }
