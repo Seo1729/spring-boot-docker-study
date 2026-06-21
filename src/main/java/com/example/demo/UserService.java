@@ -26,10 +26,13 @@ public class UserService {
 
     // 3. 유저를 등록하는 비즈니스 로직 (여기에 나중에 "검증 규칙" 같은 게 들어갑니다!)
     public void registerUser(User user) {
-        // 예시: 만약 나이가 0세 이하면 저장 안 하고 튕겨내는 로직을 여기에 짤 수 있습니다.
-        if (user.getAge() <= 0) {
-            throw new IllegalArgumentException("나이는 0세보다 많아야 합니다!");
+        // 1. 나이 검증 (Validation)
+        if (user.getAge() <= 0 || user.getAge() > 120) {
+            throw new IllegalArgumentException("유효하지 않은 나이입니다: " + user.getAge());
         }
+        // 2. 나이에 따른 등급 부여 (Business Logic)
+        if (user.getAge() < 20) { user.setGrade("JUNIOR"); }
+        else { user.setGrade("ADULT"); }
         userRepository.save(user);
     }
 }

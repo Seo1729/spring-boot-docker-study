@@ -17,20 +17,26 @@ public class User {
     private String name;
     private int age;
     private String role;
+    private String grade;
 
     // JPA를 쓸 때는 기본 생성자(아무것도 없는 빈 생성자)가 필수로 하나 있어야 오류가 안 납니다!
     protected User() {}
 
     // 기존에 있던 생성자 (id는 자동으로 들어가므로 그대로 두시면 됩니다)
-    public User(String name, int age, String role) {
+    public User(String name, int age, String role, String grade) {
         this.name = name;
         this.age = age;
         this.role = role;
+        this.grade = grade;
     }
 
     // 기존의 Getter들 아래에 id 전용 Getter 하나만 추가해 주세요.
     public Long getId() { return id; }
     public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
     public int getAge() { return age; }
+    public void setName(int age) { this.age = age; }
+    public String getGrade() { return grade; }
+    public void setGrade(String grade) { this.grade = grade; }
     public String getRole() { return role; }
 }

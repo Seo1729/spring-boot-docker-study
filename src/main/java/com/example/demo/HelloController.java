@@ -38,7 +38,13 @@ public class HelloController {
     // 유저 등록
     @PostMapping("/user")
     public String createUser(@RequestBody User newUser) {
-        userService.registerUser(newUser);
-        return newUser.getName() + " 유저가 서비스를 거쳐 진짜 DB에 등록되었습니다!";
+        try {
+            userService.registerUser(newUser);
+            return newUser.getName() + " 유저가 [" + newUser.getGrade() + "] 등급으로 등록되었습니다!";
+        } catch (IllegalArgumentException e) {
+            return "등록 실패: " + e.getMessage();
+        }
+        //userService.registerUser(newUser);
+        //return newUser.getName() + " 유저가 서비스를 거쳐 진짜 DB에 등록되었습니다!";
     }
 }
