@@ -32,10 +32,13 @@ public class User {
 
     // 기존의 Getter들 아래에 id 전용 Getter 하나만 추가해 주세요.
     public Long getId() { return id; }
+
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
+
     public int getAge() { return age; }
-    public void setName(int age) { this.age = age; }
+    public void setAge(int age) { this.age = age; }
+
     public String getGrade() { return grade; }
     public void setGrade(String grade) { this.grade = grade; }
     public String getRole() { return role; }

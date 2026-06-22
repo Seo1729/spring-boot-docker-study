@@ -2,49 +2,51 @@ package com.example.demo;
 
 import java.util.List;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class HelloController {
 
-    // 🔥 이제 Repository가 아니라 Service(주방장)를 바라봅니다!
     private final UserService userService;
 
     public HelloController(UserService userService) {
         this.userService = userService;
     }
 
-    @GetMapping("/hello")
-    public String sayHello() {
-        return "2일 차 레이어드 아키텍처 분리도 성공!";
-    }
-
-    // 전체 조회: 매니저는 주방장에게 요청만 전달합니다.
-    @GetMapping("/user")
-    public List<User> getUser() {
+    @GetMapping("/users")
+    public List<User> getAllUsers() {
         return userService.getAllUsers();
     }
 
-    // 필터링 조회
-    @GetMapping("/filter")
-    public List<User> filterUser(@RequestParam(name = "age") int inputAge) {
-        return userService.getUsersByAge(inputAge);
+    @PostMapping("/user")
+    public String createUser(@RequestBody UserRequestDto requestDto) {
+        try {
+            userService.registerUser(requestDto);
+            return requestDto.getName() + " 등록 성공!";
+        }   catch (Exception e) { return "실패: " + e.getMessage(); }
     }
 
-    // 유저 등록
-    @PostMapping("/user")
-    public String createUser(@RequestBody User newUser) {
+    // 🟡 [추가] 수정 API (예: PUT http://localhost:8080/user/1)
+    @PutMapping("/user/{id}")
+    public String updateUser(@PathVariable Long id, @RequestBody UserRequestDto requestDto) {
         try {
-            userService.registerUser(newUser);
-            return newUser.getName() + " 유저가 [" + newUser.getGrade() + "] 등급으로 등록되었습니다!";
-        } catch (IllegalArgumentException e) {
-            return "등록 실패: " + e.getMessage();
-        }
-        //userService.registerUser(newUser);
-        //return newUser.getName() + " 유저가 서비스를 거쳐 진짜 DB에 등록되었습니다!";
+            userService.updateUser(id, requestDto);
+            return id + "번 유저 수정 완료!";
+        } catch (Exception e) { return "수정 실패: " + e.getMessage(); }
+    }
+
+    // 🔴 [추가] 삭제 API (예: DELETE http://localhost:8080/user/1)
+    @DeleteMapping("/user/{id}")
+    public String deleteUser(@PathVariable Long id) {
+        try {
+            userService.deleteUser(id);
+            return id + "번 유저 삭제 완료!";
+        } catch (Exception e) { return "삭제 실패: " + e.getMessage(); }
     }
 }
